@@ -1,0 +1,65 @@
+classDiagram
+    direction LR
+
+    class Main {
+      -SupportHandler chain
+      -DefaultTableModel tableModel
+      -JTextArea activity
+      +main(String[] args)
+      -showWindow()
+      -showNewTicketDialog()
+      -route(SupportTicket ticket)
+    }
+
+    class SupportTicket {
+      <<record>>
+      +String id
+      +String subject
+      +String description
+      +Severity severity
+    }
+
+    class Severity {
+      <<enumeration>>
+      LOW
+      MEDIUM
+      HIGH
+      CRITICAL
+    }
+
+    class SupportHandler {
+      <<abstract>>
+      -SupportHandler next
+      +setNext(SupportHandler next) SupportHandler
+      +handle(SupportTicket ticket, Consumer log) String
+      #canHandle(SupportTicket ticket)* boolean
+      #resolve(SupportTicket ticket, Consumer log)* void
+      #tierName()* String
+    }
+
+    class Tier1Handler {
+      #canHandle(SupportTicket ticket) boolean
+      #resolve(SupportTicket ticket, Consumer log) void
+      #tierName() String
+    }
+
+    class Tier2Handler {
+      #canHandle(SupportTicket ticket) boolean
+      #resolve(SupportTicket ticket, Consumer log) void
+      #tierName() String
+    }
+
+    class Tier3Handler {
+      #canHandle(SupportTicket ticket) boolean
+      #resolve(SupportTicket ticket, Consumer log) void
+      #tierName() String
+    }
+
+    Main ..> SupportTicket : creates
+    Main --> SupportHandler : assembles and starts chain
+    SupportHandler o--> SupportHandler : next handler
+    SupportHandler ..> SupportTicket : handles
+    SupportTicket --> Severity : has
+    SupportHandler <|-- Tier1Handler
+    SupportHandler <|-- Tier2Handler
+    SupportHandler <|-- Tier3Handler
